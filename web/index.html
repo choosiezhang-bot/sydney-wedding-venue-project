@@ -377,7 +377,7 @@
     }
 
     async function main(){
-      const res = await fetch(CSV_PATH, { cache: 'no-store' });
+      const res = await fetch(CSV_PATH + '?t=' + Date.now(), { cache: 'no-store' });
       const csv = await res.text();
       const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true });
       all = parsed.data;
