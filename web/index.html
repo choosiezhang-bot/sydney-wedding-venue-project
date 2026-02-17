@@ -144,7 +144,7 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
-    const CSV_PATH = '../data/venue_longlist.csv';
+    const CSV_PATH = (location.pathname.includes('/web/') ? '../data/venue_longlist.csv' : './data/venue_longlist.csv');
     // CSV includes optional: photo_cover (direct image URL)
 
     const els = {
