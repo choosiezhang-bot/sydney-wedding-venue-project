@@ -13,13 +13,15 @@
     a { color: var(--accent); text-decoration: none; }
     code { color:#c7d2fe; }
 
-    header { padding: 20px 16px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, rgba(96,165,250,.08), transparent); }
+    header { padding: 18px 16px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, rgba(96,165,250,.08), transparent); }
     header h1 { margin:0 0 6px; font-size: 18px; }
     header .sub { color: var(--muted); font-size: 13px; line-height: 1.4; }
 
-    .wrap { padding: 16px; max-width: 1200px; margin: 0 auto; }
-    .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 980px){ .grid { grid-template-columns: 1.1fr .9fr; } }
+    .wrap { padding: 14px 16px; max-width: 1280px; margin: 0 auto; }
+
+    /* layout: left list + right detail */
+    .layout { display:grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 1024px){ .layout { grid-template-columns: 1.05fr .95fr; } }
 
     .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
     .card h2 { margin: 0 0 10px; font-size: 14px; color: var(--muted); font-weight: 600; letter-spacing: .2px; }
@@ -27,13 +29,13 @@
     .row { display:flex; gap:8px; flex-wrap:wrap; align-items: center; }
     input, select { background:var(--panel2); border:1px solid var(--border); color:var(--text); border-radius: 10px; padding: 10px 10px; font-size: 14px; }
     input { flex:1; min-width: 220px; }
-    select { min-width: 160px; }
+    select { min-width: 170px; }
     button { background: #1f2937; border:1px solid var(--border); color:var(--text); border-radius: 10px; padding: 10px 12px; cursor:pointer; }
     button:hover { border-color: #334155; }
 
     .kpis { display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .kpi { padding: 10px; border: 1px solid var(--border); border-radius: 10px; background:var(--panel2); }
-    .kpi .v { font-size: 18px; font-weight: 700; }
+    .kpi .v { font-size: 18px; font-weight: 800; }
     .kpi .l { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
     .pill { display:inline-block; padding: 2px 8px; border:1px solid var(--border); border-radius: 999px; color: var(--muted); font-size:12px; }
@@ -41,51 +43,66 @@
     .pill.warn { border-color: rgba(251,191,36,.35); color: rgba(251,191,36,.95); }
 
     .hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
-    .chart { height: 220px; }
 
-    /* venue modules */
-    .modules { display:grid; grid-template-columns: 1fr; gap: 10px; }
-    @media (min-width: 720px){ .modules { grid-template-columns: 1fr 1fr; } }
-    @media (min-width: 1080px){ .modules { grid-template-columns: 1fr 1fr 1fr; } }
-
-    .venue {
-      background: var(--panel);
+    /* list items */
+    .list { display:flex; flex-direction: column; gap: 8px; max-height: 70vh; overflow:auto; padding-right: 4px; }
+    .item {
+      background: var(--panel2);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 10px;
+      cursor: pointer;
     }
-    .venue .top { display:flex; justify-content: space-between; gap: 10px; align-items:flex-start; }
-    .venue .name { font-weight: 800; font-size: 14px; line-height: 1.25; }
-    .venue .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
-    .venue .meta { margin-top: 10px; display:grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .venue .meta .box { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 8px; }
-    .venue .meta .k { color: var(--muted); font-size: 11px; }
-    .venue .meta .v { margin-top: 3px; font-size: 12px; }
-    .venue .actions { margin-top: 10px; display:flex; gap: 8px; flex-wrap: wrap; }
-    .venue .actions a { font-size: 12px; }
+    .item:hover { border-color:#334155; }
+    .item.active { outline: 2px solid rgba(96,165,250,.55); border-color: rgba(96,165,250,.7); }
 
-    details { margin-top: 10px; }
+    .itemTop { display:flex; gap:10px; align-items:flex-start; }
+    .fav {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: #0b0f19;
+      border: 1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      flex: 0 0 auto;
+      overflow:hidden;
+    }
+    .fav img { width: 18px; height: 18px; }
+    .itemName { font-weight: 800; font-size: 13px; line-height: 1.25; }
+    .itemSub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+    .pagination { display:flex; justify-content: space-between; align-items:center; gap: 10px; margin-top: 10px; }
+
+    /* detail panel */
+    .detailHeader { display:flex; justify-content: space-between; gap: 10px; align-items:flex-start; }
+    .detailName { font-weight: 900; font-size: 16px; line-height: 1.2; }
+    .detailSub { color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+    .detailGrid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .box { background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 10px; }
+    .box .k { color: var(--muted); font-size: 11px; }
+    .box .v { margin-top: 5px; font-size: 13px; }
+
+    .actions { display:flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .actions a { font-size: 12px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--border); background: #0b0f19; }
+    .actions a:hover { border-color:#334155; }
+
+    details { margin-top: 12px; }
     details summary { cursor:pointer; color: var(--muted); font-size: 12px; }
-    .detailsGrid { margin-top: 8px; display:grid; grid-template-columns: 1fr; gap: 8px; }
-    .detailsGrid .box { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 8px; }
 
   </style>
 </head>
 <body>
   <header>
     <div class="wrap">
-      <h1>Sydney Wedding Venues — Longlist 可视化</h1>
-      <div class="sub">
-        每个 venue 是一个“模块卡片”，便于浏览。数据来自 <code>data/venue_longlist.csv</code>。
-      </div>
+      <h1>Sydney Wedding Venues — Longlist</h1>
+      <div class="sub">你要的“每个场地一个可交互模块”我理解为：左侧快速浏览列表（性能好），右侧点开一个场地看完整模块（含链接/照片 URL/基本信息）。数据来自 <code>data/venue_longlist.csv</code>。</div>
     </div>
   </header>
 
-  <div class="wrap grid">
+  <div class="wrap layout">
     <div class="card">
       <h2>筛选</h2>
       <div class="row">
-        <input id="q" placeholder="搜索：场地名 / suburb / source ..." />
+        <input id="q" placeholder="搜索：venue / suburb / source ..." />
         <select id="source"><option value="">Source(全部)</option></select>
         <select id="hasPrice">
           <option value="">价格(全部)</option>
@@ -102,26 +119,29 @@
 
       <div style="height:10px"></div>
       <div class="kpis">
-        <div class="kpi"><div class="v" id="k_total">-</div><div class="l">当前筛选结果</div></div>
+        <div class="kpi"><div class="v" id="k_total">-</div><div class="l">匹配场地数</div></div>
         <div class="kpi"><div class="v" id="k_price">-</div><div class="l">有价格信息</div></div>
         <div class="kpi"><div class="v" id="k_rating">-</div><div class="l">有评分信息</div></div>
       </div>
 
       <div style="height:12px"></div>
-      <h2>按 Source 分布</h2>
-      <canvas id="chart" class="chart"></canvas>
-      <div class="hint">后续我可以再加：价格区间分布、评分排序、地图视图（需要 suburb → 经纬度）。</div>
+      <h2>列表（点击一个 venue 看模块）</h2>
+      <div id="list" class="list"></div>
+      <div class="pagination">
+        <button id="prev">上一页</button>
+        <div class="hint"><span id="pageInfo">-</span></div>
+        <button id="next">下一页</button>
+      </div>
+      <div class="hint">目前用分页/详情面板，避免一次性渲染 167 个卡片导致“无法浏览/卡顿”。</div>
     </div>
 
     <div class="card">
-      <h2>Venue Modules</h2>
-      <div id="modules" class="modules"></div>
-      <div class="hint">点击每个卡片内的 “Details” 可展开更多字段。</div>
+      <h2>Venue 模块（详情）</h2>
+      <div id="detail" class="hint">从左侧列表选择一个场地。</div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <script>
     const CSV_PATH = '../data/venue_longlist.csv';
@@ -132,18 +152,33 @@
       hasPrice: document.getElementById('hasPrice'),
       hasRating: document.getElementById('hasRating'),
       reset: document.getElementById('reset'),
-      modules: document.getElementById('modules'),
+      list: document.getElementById('list'),
+      detail: document.getElementById('detail'),
+      prev: document.getElementById('prev'),
+      next: document.getElementById('next'),
+      pageInfo: document.getElementById('pageInfo'),
       k_total: document.getElementById('k_total'),
       k_price: document.getElementById('k_price'),
       k_rating: document.getElementById('k_rating'),
-      chart: document.getElementById('chart'),
     };
 
     let all = [];
-    let chart = null;
+    let filtered = [];
+    let page = 1;
+    const PAGE_SIZE = 30;
+    let activeKey = null;
 
     function normalize(s){ return (s || '').toString().toLowerCase(); }
     function clean(s){ return (s || '').toString().trim(); }
+
+    function esc(s){
+      return (s||'').toString()
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#039;');
+    }
 
     function buildSourceOptions(rows){
       const set = new Set(rows.map(r => clean(r.source)).filter(Boolean));
@@ -177,7 +212,7 @@
       return true;
     }
 
-    function badgeFor(r){
+    function computeBadge(r){
       const rating = parseFloat(clean(r.rating) || '');
       const cnt = parseInt(clean(r.reviews_count) || '0', 10);
       if (!Number.isFinite(rating) || cnt <= 0) return '';
@@ -186,9 +221,29 @@
       return '<span class="pill warn">需复核</span>';
     }
 
-    function render(){
-      // sort: with rating first, then review count
-      const rows = all.filter(passesFilters).sort((a,b) => {
+    function domainFromUrl(u){
+      try { return new URL(u).hostname.replace(/^www\./,''); } catch { return ''; }
+    }
+
+    function faviconUrl(u){
+      const d = domainFromUrl(u);
+      if (!d) return '';
+      // simple favicon service (works cross-origin)
+      return `https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(d)}`;
+    }
+
+    function googleMapsSearchUrl(r){
+      const q = [clean(r.venue_name), clean(r.suburb), 'NSW'].filter(Boolean).join(' ');
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+    }
+
+    function googleImageSearchUrl(r){
+      const q = [clean(r.venue_name), clean(r.suburb), 'wedding venue'].filter(Boolean).join(' ');
+      return `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(q)}`;
+    }
+
+    function applyFilters(){
+      filtered = all.filter(passesFilters).sort((a,b) => {
         const ra = parseFloat(clean(a.rating) || '0');
         const rb = parseFloat(clean(b.rating) || '0');
         const ca = parseInt(clean(a.reviews_count) || '0', 10);
@@ -197,109 +252,120 @@
         return cb - ca;
       });
 
-      els.k_total.textContent = rows.length;
-      els.k_price.textContent = rows.filter(r => clean(r.price_per_head)).length;
-      els.k_rating.textContent = rows.filter(r => clean(r.rating)).length;
+      // KPIs
+      els.k_total.textContent = filtered.length;
+      els.k_price.textContent = filtered.filter(r => clean(r.price_per_head)).length;
+      els.k_rating.textContent = filtered.filter(r => clean(r.rating)).length;
 
-      // modules
-      els.modules.innerHTML = '';
+      // reset pagination if needed
+      const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      if (page > pages) page = pages;
+      if (page < 1) page = 1;
+
+      renderList();
+
+      // keep active selection if still present
+      if (activeKey){
+        const idx = filtered.findIndex(r => keyOf(r) === activeKey);
+        if (idx === -1) {
+          activeKey = null;
+          els.detail.innerHTML = '<div class="hint">从左侧列表选择一个场地。</div>';
+        }
+      }
+    }
+
+    function keyOf(r){
+      return normalize(clean(r.venue_name) + '|' + clean(r.source));
+    }
+
+    function renderList(){
+      els.list.innerHTML = '';
+      const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      const start = (page - 1) * PAGE_SIZE;
+      const rows = filtered.slice(start, start + PAGE_SIZE);
+
+      els.pageInfo.textContent = `第 ${page} / ${pages} 页 · 本页 ${rows.length} 条`;
+      els.prev.disabled = page <= 1;
+      els.next.disabled = page >= pages;
+
       for (const r of rows){
         const link = clean(r.photos_official);
-        const maps = clean(r.photos_maps);
-        const real = clean(r.photos_real_weddings);
+        const fav = faviconUrl(link);
+        const k = keyOf(r);
 
-        const el = document.createElement('div');
-        el.className = 'venue';
-        el.innerHTML = `
-          <div class="top">
+        const div = document.createElement('div');
+        div.className = 'item' + (activeKey === k ? ' active' : '');
+        div.innerHTML = `
+          <div class="itemTop">
+            <div class="fav">${fav ? `<img src="${esc(fav)}" alt="" />` : ''}</div>
             <div>
-              <div class="name">${link ? `<a href="${esc(link)}" target="_blank" rel="noreferrer">${esc(r.venue_name || '')}</a>` : esc(r.venue_name || '')}</div>
-              <div class="sub">${esc(r.suburb || '')} <span style="opacity:.5">·</span> <span class="pill">${esc(r.source || '')}</span> ${badgeFor(r)}</div>
+              <div class="itemName">${esc(r.venue_name || '')}</div>
+              <div class="itemSub">${esc(r.suburb || '')} <span style="opacity:.5">·</span> <span class="pill">${esc(r.source || '')}</span> ${computeBadge(r)}</div>
             </div>
           </div>
-
-          <div class="meta">
-            <div class="box">
-              <div class="k">Capacity</div>
-              <div class="v">${esc(r.capacity_seated || '—')}</div>
-            </div>
-            <div class="box">
-              <div class="k">Price</div>
-              <div class="v">${esc(r.price_per_head || '—')}</div>
-            </div>
-            <div class="box">
-              <div class="k">Rating</div>
-              <div class="v">${esc(r.rating || '—')} ${r.reviews_count ? `<span class="pill">${esc(r.reviews_count)} reviews</span>` : ''}</div>
-            </div>
-            <div class="box">
-              <div class="k">Tags</div>
-              <div class="v">${esc(r.style_tags || '—')}</div>
-            </div>
-          </div>
-
-          <div class="actions">
-            ${link ? `<a href="${esc(link)}" target="_blank" rel="noreferrer">Official/Source ↗</a>` : ''}
-            ${maps ? `<a href="${esc(maps)}" target="_blank" rel="noreferrer">Maps photos ↗</a>` : ''}
-            ${real ? `<a href="${esc(real)}" target="_blank" rel="noreferrer">Real weddings ↗</a>` : ''}
-          </div>
-
-          <details>
-            <summary>Details</summary>
-            <div class="detailsGrid">
-              <div class="box"><div class="k">Min spend</div><div class="v">${esc(r.min_spend || '—')}</div></div>
-              <div class="box"><div class="k">Venue hire</div><div class="v">${esc(r.venue_hire || '—')}</div></div>
-              <div class="box"><div class="k">Fees notes</div><div class="v">${esc(r.fees_notes || '—')}</div></div>
-              <div class="box"><div class="k">Notes</div><div class="v">${esc(r.notes || '—')}</div></div>
-            </div>
-          </details>
         `;
-        els.modules.appendChild(el);
+        div.addEventListener('click', () => {
+          activeKey = k;
+          // highlight active
+          for (const node of els.list.querySelectorAll('.item')) node.classList.remove('active');
+          div.classList.add('active');
+          renderDetail(r);
+        });
+        els.list.appendChild(div);
       }
 
-      renderChart(rows);
-    }
-
-    function esc(s){
-      return (s||'').toString()
-        .replaceAll('&','&amp;')
-        .replaceAll('<','&lt;')
-        .replaceAll('>','&gt;')
-        .replaceAll('"','&quot;')
-        .replaceAll("'",'&#039;');
-    }
-
-    function renderChart(rows){
-      const counts = new Map();
-      for (const r of rows){
-        const k = clean(r.source) || 'unknown';
-        counts.set(k, (counts.get(k) || 0) + 1);
+      // auto-select first if none selected
+      if (!activeKey && rows.length){
+        const first = rows[0];
+        activeKey = keyOf(first);
+        els.list.querySelector('.item')?.classList.add('active');
+        renderDetail(first);
       }
-      const labels = Array.from(counts.keys()).sort();
-      const data = labels.map(l => counts.get(l));
+    }
 
-      if (chart) chart.destroy();
-      chart = new Chart(els.chart, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{
-            label: 'venues',
-            data,
-            backgroundColor: 'rgba(96,165,250,0.65)',
-            borderColor: 'rgba(96,165,250,1)',
-            borderWidth: 1,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(31,41,55,0.8)' } },
-            y: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(31,41,55,0.8)' }, beginAtZero: true }
-          }
-        }
-      });
+    function renderDetail(r){
+      const link = clean(r.photos_official);
+      const maps = clean(r.photos_maps) || googleMapsSearchUrl(r);
+      const imgSearch = googleImageSearchUrl(r);
+
+      const photoUrl = clean(r.photos_real_weddings) || '';
+
+      els.detail.innerHTML = `
+        <div class="detailHeader">
+          <div>
+            <div class="detailName">${link ? `<a href="${esc(link)}" target="_blank" rel="noreferrer">${esc(r.venue_name || '')}</a>` : esc(r.venue_name || '')}</div>
+            <div class="detailSub">${esc(r.suburb || '')} <span style="opacity:.5">·</span> <span class="pill">${esc(r.source || '')}</span> ${computeBadge(r)}</div>
+          </div>
+        </div>
+
+        <div class="detailGrid">
+          <div class="box"><div class="k">Capacity</div><div class="v">${esc(r.capacity_seated || '—')}</div></div>
+          <div class="box"><div class="k">Price (p/head)</div><div class="v">${esc(r.price_per_head || '—')}</div></div>
+          <div class="box"><div class="k">Rating</div><div class="v">${esc(r.rating || '—')} ${r.reviews_count ? `<span class="pill">${esc(r.reviews_count)} reviews</span>` : ''}</div></div>
+          <div class="box"><div class="k">Tags</div><div class="v">${esc(r.style_tags || '—')}</div></div>
+        </div>
+
+        <div class="actions">
+          ${link ? `<a href="${esc(link)}" target="_blank" rel="noreferrer">Website / Listing ↗</a>` : ''}
+          <a href="${esc(maps)}" target="_blank" rel="noreferrer">Google Maps ↗</a>
+          <a href="${esc(imgSearch)}" target="_blank" rel="noreferrer">Photo search ↗</a>
+          ${photoUrl ? `<a href="${esc(photoUrl)}" target="_blank" rel="noreferrer">Real weddings ↗</a>` : ''}
+        </div>
+
+        <details open>
+          <summary>More fields</summary>
+          <div class="detailGrid" style="margin-top:10px">
+            <div class="box"><div class="k">Min spend</div><div class="v">${esc(r.min_spend || '—')}</div></div>
+            <div class="box"><div class="k">Venue hire</div><div class="v">${esc(r.venue_hire || '—')}</div></div>
+            <div class="box"><div class="k">Fees notes</div><div class="v">${esc(r.fees_notes || '—')}</div></div>
+            <div class="box"><div class="k">Notes</div><div class="v">${esc(r.notes || '—')}</div></div>
+            <div class="box"><div class="k">Photo URL (field)</div><div class="v">${esc(r.photos_real_weddings || '—')}</div></div>
+            <div class="box"><div class="k">Official URL (field)</div><div class="v">${esc(r.photos_official || '—')}</div></div>
+          </div>
+        </details>
+
+        <div class="hint">说明：目前 CSV 里“照片直链”字段还不完整，所以模块里给了一个可用的 <b>Google Images 搜索链接</b> 作为照片入口。下一步我可以批量补齐 photos_maps / photos_real_weddings 字段。</div>
+      `;
     }
 
     async function main(){
@@ -308,24 +374,32 @@
       const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true });
       all = parsed.data;
       buildSourceOptions(all);
-      render();
+      applyFilters();
 
       for (const el of [els.q, els.source, els.hasPrice, els.hasRating]){
-        el.addEventListener('input', render);
-        el.addEventListener('change', render);
+        el.addEventListener('input', () => { page = 1; activeKey = null; applyFilters(); });
+        el.addEventListener('change', () => { page = 1; activeKey = null; applyFilters(); });
       }
       els.reset.addEventListener('click', () => {
         els.q.value = '';
         els.source.value = '';
         els.hasPrice.value = '';
         els.hasRating.value = '';
-        render();
+        page = 1; activeKey = null;
+        applyFilters();
+      });
+      els.prev.addEventListener('click', () => { page = Math.max(1, page - 1); activeKey = null; renderList(); });
+      els.next.addEventListener('click', () => {
+        const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+        page = Math.min(pages, page + 1);
+        activeKey = null;
+        renderList();
       });
     }
 
     main().catch(err => {
       console.error(err);
-      alert('加载 CSV 失败：GitHub Pages 若缓存，刷新几次或等 1-2 分钟。');
+      alert('加载失败：请稍后刷新（GitHub Pages 可能有缓存）。');
     });
   </script>
 </body>
