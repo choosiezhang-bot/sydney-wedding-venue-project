@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sydney Wedding Venues — Longlist</title>
+  <style>
+    :root { --bg:#0b0f19; --panel:#111827; --text:#e5e7eb; --muted:#9ca3af; --accent:#60a5fa; --border:#1f2937; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:var(--bg); color:var(--text); }
+    a { color: var(--accent); text-decoration: none; }
+    header { padding: 20px 16px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, rgba(96,165,250,.08), transparent); }
+    header h1 { margin:0 0 6px; font-size: 18px; }
+    header .sub { color: var(--muted); font-size: 13px; line-height: 1.4; }
+    .wrap { padding: 16px; max-width: 1200px; margin: 0 auto; }
+    .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 900px){ .grid { grid-template-columns: 1.2fr .8fr; } }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    .card h2 { margin: 0 0 10px; font-size: 14px; color: var(--muted); font-weight: 600; letter-spacing: .2px; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; align-items: center; }
+    input, select { background:#0b1220; border:1px solid var(--border); color:var(--text); border-radius: 10px; padding: 10px 10px; font-size: 14px; }
+    input { flex:1; min-width: 220px; }
+    select { min-width: 160px; }
+    button { background: #1f2937; border:1px solid var(--border); color:var(--text); border-radius: 10px; padding: 10px 12px; cursor:pointer; }
+    button:hover { border-color: #334155; }
+    .kpis { display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .kpi { padding: 10px; border: 1px solid var(--border); border-radius: 10px; background:#0b1220; }
+    .kpi .v { font-size: 18px; font-weight: 700; }
+    .kpi .l { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .tableWrap { overflow:auto; border-radius: 12px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { position: sticky; top: 0; background: #0b1220; text-align: left; color: var(--muted); font-weight: 600; }
+    tr:hover td { background: rgba(96,165,250,.06); }
+    .pill { display:inline-block; padding: 2px 8px; border:1px solid var(--border); border-radius: 999px; color: var(--muted); }
+    .small { color: var(--muted); font-size: 12px; }
+    .hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
+    .chart { height: 240px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Sydney Wedding Venues — Longlist 可视化</h1>
+      <div class="sub">
+        数据来自仓库 <a href="https://github.com/choosiezhang-bot/sydney-wedding-venue-project" target="_blank" rel="noreferrer">sydney-wedding-venue-project</a> 的 <code>data/venue_longlist.csv</code>。
+        你可以用搜索/筛选快速缩小范围，然后点击链接看官方页面。
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap grid">
+    <div class="card">
+      <h2>筛选</h2>
+      <div class="row">
+        <input id="q" placeholder="搜索：场地名 / suburb / source ..." />
+        <select id="source">
+          <option value="">Source(全部)</option>
+        </select>
+        <select id="hasPrice">
+          <option value="">价格(全部)</option>
+          <option value="yes">有价格</option>
+          <option value="no">无价格</option>
+        </select>
+        <select id="hasRating">
+          <option value="">评分(全部)</option>
+          <option value="yes">有评分</option>
+          <option value="no">无评分</option>
+        </select>
+        <button id="reset">重置</button>
+      </div>
+
+      <div style="height:10px"></div>
+      <div class="kpis">
+        <div class="kpi"><div class="v" id="k_total">-</div><div class="l">总场地数</div></div>
+        <div class="kpi"><div class="v" id="k_price">-</div><div class="l">有价格信息</div></div>
+        <div class="kpi"><div class="v" id="k_rating">-</div><div class="l">有评分信息</div></div>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="row small">
+        <span class="pill">提示</span>
+        <span>“详细资料”会分两步做：先把结构做出来（你现在看到的），再逐条补齐价格/容量/照片链接。</span>
+      </div>
+
+      <div style="height:12px"></div>
+      <h2>按 Source 分布</h2>
+      <canvas id="chart" class="chart"></canvas>
+      <div class="hint">注：目前大部分来源来自 EasyWeddings（Sydney + 周边区域）。后续可以继续加其他平台。</div>
+    </div>
+
+    <div class="card">
+      <h2>列表</h2>
+      <div class="tableWrap">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th style="min-width:220px">Venue</th>
+              <th style="min-width:130px">Suburb</th>
+              <th style="min-width:140px">Capacity</th>
+              <th style="min-width:150px">Price</th>
+              <th style="min-width:130px">Rating</th>
+              <th style="min-width:140px">Source</th>
+              <th style="min-width:120px">Links</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="hint">点击 Links 打开官方/来源页面。表格支持滚动。</div>
+    </div>
+  </div>
+
+  <!-- libs -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script>
+    const CSV_PATH = '../data/venue_longlist.csv';
+
+    const els = {
+      q: document.getElementById('q'),
+      source: document.getElementById('source'),
+      hasPrice: document.getElementById('hasPrice'),
+      hasRating: document.getElementById('hasRating'),
+      reset: document.getElementById('reset'),
+      tbody: document.querySelector('#tbl tbody'),
+      k_total: document.getElementById('k_total'),
+      k_price: document.getElementById('k_price'),
+      k_rating: document.getElementById('k_rating'),
+      chart: document.getElementById('chart')
+    };
+
+    let all = [];
+    let chart = null;
+
+    function normalize(s){ return (s || '').toString().toLowerCase(); }
+
+    function buildSourceOptions(rows){
+      const set = new Set(rows.map(r => (r.source || '').trim()).filter(Boolean));
+      const opts = Array.from(set).sort();
+      for (const v of opts){
+        const o = document.createElement('option');
+        o.value = v; o.textContent = v;
+        els.source.appendChild(o);
+      }
+    }
+
+    function passesFilters(r){
+      const q = normalize(els.q.value);
+      if (q){
+        const hay = normalize([r.venue_name, r.suburb, r.source, r.price_per_head, r.capacity_seated].join(' | '));
+        if (!hay.includes(q)) return false;
+      }
+      const s = (els.source.value || '').trim();
+      if (s && (r.source || '').trim() !== s) return false;
+
+      const hp = els.hasPrice.value;
+      const hasPrice = !!(r.price_per_head && r.price_per_head.trim());
+      if (hp === 'yes' && !hasPrice) return false;
+      if (hp === 'no' && hasPrice) return false;
+
+      const hr = els.hasRating.value;
+      const hasRating = !!(r.rating && r.rating.trim());
+      if (hr === 'yes' && !hasRating) return false;
+      if (hr === 'no' && hasRating) return false;
+
+      return true;
+    }
+
+    function render(){
+      const rows = all.filter(passesFilters);
+
+      // KPIs
+      els.k_total.textContent = rows.length;
+      els.k_price.textContent = rows.filter(r => (r.price_per_head || '').trim()).length;
+      els.k_rating.textContent = rows.filter(r => (r.rating || '').trim()).length;
+
+      // table
+      els.tbody.innerHTML = '';
+      for (const r of rows){
+        const tr = document.createElement('tr');
+
+        const link = (r.photos_official || '').trim();
+        const nameHtml = link ? `<a href="${link}" target="_blank" rel="noreferrer">${escapeHtml(r.venue_name || '')}</a>` : escapeHtml(r.venue_name || '');
+
+        tr.innerHTML = `
+          <td>${nameHtml}</td>
+          <td>${escapeHtml(r.suburb || '')}</td>
+          <td>${escapeHtml(r.capacity_seated || '')}</td>
+          <td>${escapeHtml(r.price_per_head || '')}</td>
+          <td>${escapeHtml(r.rating || '')}${r.reviews_count ? ` <span class="small">(${escapeHtml(r.reviews_count)})</span>` : ''}</td>
+          <td><span class="pill">${escapeHtml(r.source || '')}</span></td>
+          <td>${link ? `<a href="${link}" target="_blank" rel="noreferrer">open</a>` : ''}</td>
+        `;
+        els.tbody.appendChild(tr);
+      }
+
+      renderChart(rows);
+    }
+
+    function escapeHtml(s){
+      return (s||'').toString()
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#039;');
+    }
+
+    function renderChart(rows){
+      const counts = new Map();
+      for (const r of rows){
+        const k = (r.source || 'unknown').trim() || 'unknown';
+        counts.set(k, (counts.get(k) || 0) + 1);
+      }
+      const labels = Array.from(counts.keys()).sort();
+      const data = labels.map(l => counts.get(l));
+
+      if (chart) chart.destroy();
+      chart = new Chart(els.chart, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'venues',
+            data,
+            backgroundColor: 'rgba(96,165,250,0.65)',
+            borderColor: 'rgba(96,165,250,1)',
+            borderWidth: 1,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(31,41,55,0.8)' } },
+            y: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(31,41,55,0.8)' }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    async function main(){
+      const res = await fetch(CSV_PATH, { cache: 'no-store' });
+      const csv = await res.text();
+      const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true });
+      all = parsed.data;
+      buildSourceOptions(all);
+      render();
+
+      for (const el of [els.q, els.source, els.hasPrice, els.hasRating]){
+        el.addEventListener('input', render);
+        el.addEventListener('change', render);
+      }
+      els.reset.addEventListener('click', () => {
+        els.q.value = '';
+        els.source.value = '';
+        els.hasPrice.value = '';
+        els.hasRating.value = '';
+        render();
+      });
+    }
+
+    main().catch(err => {
+      console.error(err);
+      alert('加载 CSV 失败：请用本地 http server 打开（不要直接 file:// 打开）。');
+    });
+  </script>
+</body>
+</html>
